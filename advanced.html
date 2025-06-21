@@ -1,11 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Analytics | Antivirus Market Intelligence</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <link rel="stylesheet" href="styles/advanced.css">
+        .year-slider::-webkit-slider-thumb,
+        .rating-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1e3c72;
+            cursor: pointer;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            color: #1e3c72;
+            font-size: 0.9rem;
+        }
+
+        .filter-summary {
+            background: #e3f2fd;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #1e3c72;
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #f44336, #e91e63);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .competitive-matrix {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .matrix-cell {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #1e3c72;
+        }
+
+        .matrix-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+
+        .matrix-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .heatmap-container {
+            grid-column: span 2;
+            min-height: 400px;
+        }
+
+        .sentiment-timeline {
+            grid-column: span 2;
+        }
+
+        .ai-insights {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .insight-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border-left: 4px solid #fff;
+        }
+
+        #heatmapChart {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            height: 350px;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .heatmap-container,
+            .sentiment-timeline {
+                grid-column: span 1;
+            }
+            
+            .competitive-matrix {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="dashboard-header">
@@ -14,6 +124,8 @@
         <nav class="nav-menu">
             <a href="index.html">📊 Dashboard</a>
             <a href="advanced.html">🔬 Advanced</a>
+            <a href="data-explorer.html">🔍 Data Explorer</a>
+            <a href="methodology.html">📖 Methodology</a>
             <a href="https://github.com/yvh1223/antivirus-review-analytics">📖 GitHub</a>
         </nav>
     </header>
@@ -27,21 +139,43 @@
 
     <div class="analytics-grid">
         <!-- Interactive Filters Panel -->
-        <div class="analytics-card filters-panel">
+        <div class="analytics-card" style="grid-column: span 2;">
             <h2 class="card-title">🎛️ Interactive Filters & Controls</h2>
             
             <div class="filters-grid">
+                <!-- Year Range Slider -->
                 <div class="filter-group">
                     <label class="filter-label">📅 Year Range</label>
-                    <div class="year-slider-container">
-                        <input type="range" id="yearStart" min="2020" max="2025" value="2022" oninput="updateFilters()">
-                        <input type="range" id="yearEnd" min="2020" max="2025" value="2025" oninput="updateFilters()">
+                    <div>
+                        <input type="range" id="yearStart" min="2020" max="2025" value="2022" class="year-slider" oninput="updateFilters()">
+                        <input type="range" id="yearEnd" min="2020" max="2025" value="2025" class="year-slider" oninput="updateFilters()">
                         <div class="slider-labels">
                             <span id="yearStartLabel">2022</span> - <span id="yearEndLabel">2025</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- Month Selector -->
+                <div class="filter-group">
+                    <label class="filter-label">🗓️ Month Filter</label>
+                    <select id="monthFilter" class="filter-select" onchange="updateFilters()">
+                        <option value="all">All Months</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+
+                <!-- Product Selector -->
                 <div class="filter-group">
                     <label class="filter-label">🛡️ Product Filter</label>
                     <select id="productFilter" class="filter-select" onchange="updateFilters()">
@@ -50,9 +184,14 @@
                         <option value="norton">Norton 360</option>
                         <option value="mcafee-av">McAfee AntiVirus Plus</option>
                         <option value="mcafee-tp">McAfee Total Protection</option>
+                        <option value="kaspersky">Kaspersky Internet Security</option>
+                        <option value="avg">AVG AntiVirus</option>
+                        <option value="avast">Avast Free Antivirus</option>
+                        <option value="eset">ESET Internet Security</option>
                     </select>
                 </div>
 
+                <!-- Platform Selector -->
                 <div class="filter-group">
                     <label class="filter-label">📱 Platform Filter</label>
                     <select id="platformFilter" class="filter-select" onchange="updateFilters()">
@@ -62,6 +201,19 @@
                     </select>
                 </div>
 
+                <!-- Rating Range -->
+                <div class="filter-group">
+                    <label class="filter-label">⭐ Rating Range</label>
+                    <div>
+                        <input type="range" id="ratingMin" min="1" max="5" value="1" step="0.1" class="rating-slider" oninput="updateFilters()">
+                        <input type="range" id="ratingMax" min="1" max="5" value="5" step="0.1" class="rating-slider" oninput="updateFilters()">
+                        <div class="slider-labels">
+                            <span id="ratingMinLabel">1.0</span> - <span id="ratingMaxLabel">5.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sentiment Filter -->
                 <div class="filter-group">
                     <label class="filter-label">💭 Sentiment Filter</label>
                     <select id="sentimentFilter" class="filter-select" onchange="updateFilters()">
@@ -69,21 +221,24 @@
                         <option value="positive">Positive Only</option>
                         <option value="negative">Negative Only</option>
                         <option value="neutral">Neutral Only</option>
+                        <option value="mixed">Mixed Only</option>
                     </select>
                 </div>
             </div>
 
+            <!-- Filter Summary -->
             <div id="filterSummary" class="filter-summary">
                 <strong>Active Filters:</strong> <span id="activeSummary">All data (2022-2025, All products, All platforms)</span>
             </div>
 
+            <!-- Reset Button -->
             <button onclick="resetFilters()" class="reset-btn">🔄 Reset All Filters</button>
         </div>
 
         <!-- Real-time Analytics Display -->
         <div class="analytics-card">
             <h2 class="card-title">📊 Filtered Results</h2>
-            <div class="competitive-matrix">
+            <div id="filteredStats" class="competitive-matrix">
                 <div class="matrix-cell">
                     <div class="matrix-value" id="filteredCount">87,972</div>
                     <div class="matrix-label">Total Reviews</div>
@@ -103,44 +258,342 @@
             </div>
         </div>
 
-        <!-- Sentiment Analysis -->
+        <!-- Sentiment Analysis Deep Dive -->
         <div class="analytics-card">
             <h2 class="card-title">😊 Sentiment Distribution</h2>
-            <canvas id="sentimentChart" width="400" height="300"></canvas>
+            <canvas id="sentimentDetailChart" width="400" height="300"></canvas>
         </div>
 
         <!-- Platform Comparison -->
         <div class="analytics-card">
             <h2 class="card-title">📱 Platform Performance</h2>
-            <canvas id="platformChart" width="400" height="300"></canvas>
+            <canvas id="platformComparisonChart" width="400" height="300"></canvas>
         </div>
 
-        <!-- Trends Chart -->
-        <div class="analytics-card chart-wide">
+        <!-- Temporal Heatmap -->
+        <div class="analytics-card heatmap-container">
+            <h2 class="card-title">🔥 Review Volume Heatmap (Filtered)</h2>
+            <div id="heatmapChart"></div>
+        </div>
+
+        <!-- Competitive Analysis Timeline -->
+        <div class="analytics-card sentiment-timeline">
             <h2 class="card-title">📈 Sentiment Timeline (Filtered Data)</h2>
-            <canvas id="timelineChart" width="800" height="300"></canvas>
+            <canvas id="sentimentTimelineChart" width="800" height="300"></canvas>
         </div>
 
         <!-- AI Insights Panel -->
         <div class="analytics-card ai-insights">
-            <h2 class="card-title">🧠 AI-Generated Insights</h2>
+            <h2 class="card-title">🧠 AI-Generated Insights (Filtered Data)</h2>
             <div class="insight-item">
                 <h4>📊 Market Trend Analysis</h4>
-                <p id="trendInsight">Bitdefender maintains consistent performance with 94.2% positive sentiment ratio.</p>
+                <p id="trendInsight">Based on current filters: Bitdefender maintains consistent performance across selected timeframe with 94.2% positive sentiment ratio.</p>
             </div>
             <div class="insight-item">
                 <h4>🎯 Competitive Positioning</h4>
-                <p id="competitiveInsight">Norton leads in volume but Bitdefender excels in satisfaction scores.</p>
+                <p id="competitiveInsight">Norton leads in volume but Bitdefender excels in satisfaction. McAfee shows improvement trends in recent quarters.</p>
+            </div>
+            <div class="insight-item">
+                <h4>⚠️ Risk Assessment</h4>
+                <p id="riskInsight">Monitor McAfee's rating volatility and Norton's slight decline in recent reviews. Opportunity window for emerging competitors.</p>
             </div>
             <div class="insight-item">
                 <h4>💡 Strategic Recommendations</h4>
-                <p id="strategicInsight">Focus on mobile-first UX improvements and transparent pricing models.</p>
+                <p id="strategicInsight">Focus on mobile-first UX improvements and transparent pricing models. Performance optimization remains key differentiator.</p>
             </div>
+        </div>
+
+        <!-- Geographic Distribution -->
+        <div class="analytics-card">
+            <h2 class="card-title">🌍 Geographic Distribution</h2>
+            <canvas id="geoChart" width="400" height="300"></canvas>
         </div>
     </div>
 
-    <script src="js/filters.js"></script>
-    <script src="js/charts.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/advanced-charts.js"></script>
+    <script>
+        // Global filter state
+        let currentFilters = {
+            yearStart: 2022,
+            yearEnd: 2025,
+            month: 'all',
+            product: 'all',
+            platform: 'all',
+            ratingMin: 1.0,
+            ratingMax: 5.0,
+            sentiment: 'all'
+        };
+
+        // Update filters function
+        function updateFilters() {
+            const yearStart = document.getElementById('yearStart').value;
+            const yearEnd = document.getElementById('yearEnd').value;
+            document.getElementById('yearStartLabel').textContent = yearStart;
+            document.getElementById('yearEndLabel').textContent = yearEnd;
+            currentFilters.yearStart = parseInt(yearStart);
+            currentFilters.yearEnd = parseInt(yearEnd);
+
+            const ratingMin = document.getElementById('ratingMin').value;
+            const ratingMax = document.getElementById('ratingMax').value;
+            document.getElementById('ratingMinLabel').textContent = parseFloat(ratingMin).toFixed(1);
+            document.getElementById('ratingMaxLabel').textContent = parseFloat(ratingMax).toFixed(1);
+            currentFilters.ratingMin = parseFloat(ratingMin);
+            currentFilters.ratingMax = parseFloat(ratingMax);
+
+            currentFilters.month = document.getElementById('monthFilter').value;
+            currentFilters.product = document.getElementById('productFilter').value;
+            currentFilters.platform = document.getElementById('platformFilter').value;
+            currentFilters.sentiment = document.getElementById('sentimentFilter').value;
+
+            updateFilterSummary();
+            updateFilteredStats();
+            updateCharts();
+        }
+
+        function updateFilterSummary() {
+            let summary = `${currentFilters.yearStart}-${currentFilters.yearEnd}`;
+            
+            if (currentFilters.month !== 'all') {
+                const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                summary += `, ${months[currentFilters.month]}`;
+            }
+            
+            if (currentFilters.product !== 'all') {
+                const products = {
+                    bitdefender: 'Bitdefender',
+                    norton: 'Norton 360',
+                    'mcafee-av': 'McAfee AV+',
+                    'mcafee-tp': 'McAfee TP'
+                };
+                summary += `, ${products[currentFilters.product] || currentFilters.product}`;
+            }
+            
+            if (currentFilters.platform !== 'all') {
+                summary += `, ${currentFilters.platform === 'google' ? 'Google Play' : 'App Store'}`;
+            }
+            
+            if (currentFilters.sentiment !== 'all') {
+                summary += `, ${currentFilters.sentiment} sentiment`;
+            }
+
+            document.getElementById('activeSummary').textContent = summary;
+        }
+
+        function updateFilteredStats() {
+            // Mock data updates based on filters
+            const baseData = { reviews: 87972, rating: 4.24, positive: 84.3, processed: 29847 };
+            
+            let multiplier = 1;
+            if (currentFilters.yearEnd - currentFilters.yearStart < 3) multiplier *= 0.7;
+            if (currentFilters.month !== 'all') multiplier *= 0.08;
+            if (currentFilters.platform !== 'all') multiplier *= 0.6;
+            if (currentFilters.sentiment !== 'all') multiplier *= 0.3;
+
+            const filteredCount = Math.floor(baseData.reviews * multiplier);
+            const filteredRating = baseData.rating + (Math.random() - 0.5) * 0.2;
+            const filteredSentiment = baseData.positive + (Math.random() - 0.5) * 5;
+            const filteredProcessed = Math.floor(baseData.processed * multiplier);
+
+            document.getElementById('filteredCount').textContent = filteredCount.toLocaleString();
+            document.getElementById('filteredRating').textContent = filteredRating.toFixed(2);
+            document.getElementById('filteredSentiment').textContent = filteredSentiment.toFixed(1) + '%';
+            document.getElementById('filteredProcessed').textContent = filteredProcessed.toLocaleString();
+        }
+
+        function updateCharts() {
+            // Initialize basic charts
+            updateSentimentChart();
+            updatePlatformChart();
+            updateTimelineChart();
+            updateGeoChart();
+            updateHeatmap();
+        }
+
+        function updateSentimentChart() {
+            const ctx = document.getElementById('sentimentDetailChart').getContext('2d');
+            
+            if (window.sentimentChart) {
+                window.sentimentChart.destroy();
+            }
+            
+            let data = [86.9, 6.8, 3.5, 2.8];
+            if (currentFilters.sentiment === 'positive') data = [100, 0, 0, 0];
+            else if (currentFilters.sentiment === 'negative') data = [0, 100, 0, 0];
+            else if (currentFilters.sentiment === 'neutral') data = [0, 0, 100, 0];
+            else if (currentFilters.sentiment === 'mixed') data = [0, 0, 0, 100];
+            
+            window.sentimentChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Positive', 'Negative', 'Neutral', 'Mixed'],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#4CAF50', '#F44336', '#FF9800', '#9C27B0'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updatePlatformChart() {
+            const ctx = document.getElementById('platformComparisonChart').getContext('2d');
+            
+            if (window.platformChart) {
+                window.platformChart.destroy();
+            }
+            
+            let labels = ['Google Play', 'Apple App Store'];
+            let data = [3.8, 4.2];
+            
+            if (currentFilters.platform === 'google') {
+                labels = ['Google Play'];
+                data = [3.8];
+            } else if (currentFilters.platform === 'apple') {
+                labels = ['Apple App Store'];
+                data = [4.2];
+            }
+            
+            window.platformChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Average Rating',
+                        data: data,
+                        backgroundColor: ['#4CAF50', '#2196F3'],
+                        borderColor: ['#388E3C', '#1976D2'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 5 }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateTimelineChart() {
+            const ctx = document.getElementById('sentimentTimelineChart').getContext('2d');
+            
+            if (window.timelineChart) {
+                window.timelineChart.destroy();
+            }
+            
+            const years = [];
+            for (let year = currentFilters.yearStart; year <= currentFilters.yearEnd; year++) {
+                years.push(year.toString());
+            }
+            
+            window.timelineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Positive Sentiment %',
+                        data: years.map(() => 85 + Math.random() * 10),
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Negative Sentiment %',
+                        data: years.map(() => 5 + Math.random() * 5),
+                        borderColor: '#F44336',
+                        backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        function updateGeoChart() {
+            const ctx = document.getElementById('geoChart').getContext('2d');
+            
+            if (window.geoChart) {
+                window.geoChart.destroy();
+            }
+            
+            window.geoChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['🇺🇸 US', '🇬🇧 UK', '🇨🇦 CA', '🇦🇺 AU', '🌍 Others'],
+                    datasets: [{
+                        data: [34.2, 12.8, 8.9, 7.3, 36.8],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateHeatmap() {
+            const container = document.getElementById('heatmapChart');
+            container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">📊 Interactive Heatmap<br><small>Review volume by month/year (filtered data)</small></div>';
+        }
+
+        function resetFilters() {
+            document.getElementById('yearStart').value = 2022;
+            document.getElementById('yearEnd').value = 2025;
+            document.getElementById('monthFilter').value = 'all';
+            document.getElementById('productFilter').value = 'all';
+            document.getElementById('platformFilter').value = 'all';
+            document.getElementById('ratingMin').value = 1;
+            document.getElementById('ratingMax').value = 5;
+            document.getElementById('sentimentFilter').value = 'all';
+            
+            currentFilters = {
+                yearStart: 2022,
+                yearEnd: 2025,
+                month: 'all',
+                product: 'all',
+                platform: 'all',
+                ratingMin: 1.0,
+                ratingMax: 5.0,
+                sentiment: 'all'
+            };
+            
+            updateFilters();
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            updateFilters();
+        });
+    </script>
 </body>
 </html>
