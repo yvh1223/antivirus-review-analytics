@@ -1,0 +1,56 @@
+title: Antivirus Review Analytics
+description: AI-Powered Consumer Security Intelligence | 200K+ Reviews Analysis
+url: "https://yvh1223.github.io"
+baseurl: "/antivirus-review-analytics"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Jekyll plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - README.md
+
+# Site settings
+author: "Antivirus Analytics Team"
+email: "analytics@antivirus-review.com"
+github_username: yvh1223
+
+# Analytics
+google_analytics: # Add your GA tracking ID here
+
+# Social links
+social_links:
+  github: yvh1223
+
+# SEO settings
+lang: en_US
+timezone: America/New_York
+
+# Collection settings
+collections:
+  pages:
+    output: true
+    permalink: /:name/
+
+# Default layouts
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
