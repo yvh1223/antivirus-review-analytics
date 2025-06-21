@@ -1,0 +1,69 @@
+        function createChart(data, queryType) {
+            const chartContainer = document.getElementById('chartContainer');
+            const ctx = document.getElementById('resultsChart').getContext('2d');
+            
+            chartContainer.style.display = 'block';
+            
+            if (window.resultsChart) {
+                window.resultsChart.destroy();
+            }
+            
+            let chartConfig = {};
+            
+            if (queryType === 'reviewsByProduct') {
+                chartConfig = {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(item => item.product_name),
+                        datasets: [{
+                            label: 'Total Reviews',
+                            data: data.map(item => item.total_reviews),
+                            backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                };
+            } else if (queryType === 'temporalTrends') {
+                chartConfig = {
+                    type: 'line',
+                    data: {
+                        labels: data.map(item => new Date(item.month).toLocaleDateString()),
+                        datasets: [{
+                            label: 'Review Count',
+                            data: data.map(item => item.review_count),
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                };
+            }
+            
+            window.resultsChart = new Chart(ctx, chartConfig);
+        }
+
+        function clearResults() {
+            document.getElementById('queryResults').innerHTML = '';
+            document.getElementById('chartContainer').style.display = 'none';
+            document.getElementById('sqlQuery').value = '';
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initializePage);
+    </script>
+</body>
+</html>
